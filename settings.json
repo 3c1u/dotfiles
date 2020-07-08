@@ -1,0 +1,43 @@
+{
+    "workbench.colorTheme": "One Dark Pro",
+    "editor.fontFamily": "'Fira Code', 'Hiragino Sans', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontSize": 14,
+    "editor.fontLigatures": true,
+    "window.nativeTabs": true,
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "python.jediEnabled": false,
+    "window.zoomLevel": 0,
+    "rust-analyzer.inlayHints.maxLength": 2,
+    "terminal.integrated.inheritEnv": false,
+    "files.autoGuessEncoding": true,
+    "remote.SSH.useLocalServer": false,
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-e",
+                "$lualatex=q/lualatex --shell-escape %O -synctex=1 -interaction=nonstopmode -file-line-error %S/",
+                "-e",
+                "$bibtex=q/upbibtex %O %B/",
+                "-e",
+                "$biber=q/biber %O --bblencoding=utf8 -u -U --output_safechars %B/",
+                "-e",
+                "$makeindex=q/upmendex %O -o %D %S/",
+                "-norc",
+                "-gg",
+                "-pdflua",
+                "%DOC%"
+            ]
+        }
+    ],
+    "latex-workshop.view.pdf.viewer": "browser",
+    "r.rterm.mac": "/usr/local/anaconda3/bin/r",
+    "python.languageServer": "Microsoft",
+    "tabnine.experimentalAutoImports": true,
+    "cmake.configureOnOpen": true,
+    "remote.SSH.remotePlatform": {
+        "10.0.1.13": "linux"
+    }
+}

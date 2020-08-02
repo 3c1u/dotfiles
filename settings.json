@@ -34,10 +34,11 @@
     ],
     "latex-workshop.view.pdf.viewer": "browser",
     "r.rterm.mac": "/usr/local/anaconda3/bin/r",
-    "python.languageServer": "Microsoft",
+    "python.languageServer": "Pylance",
     "tabnine.experimentalAutoImports": true,
     "cmake.configureOnOpen": true,
     "remote.SSH.remotePlatform": {
         "10.0.1.13": "linux"
-    }
+    },
+    "sourcekit-lsp.serverPath": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
 }

@@ -1,3 +1,8 @@
+;; Emacs設定ファイル
+;; ---
+;; Copyright (c) 2020 Hikaru Terazono. All rights reserved.
+
+;; MELPAの設定
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
@@ -17,10 +22,31 @@ There are two things you can do about this warning:
     (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
+;; straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+
+;; macOSのEmacs以外では動かないので，コメントアウトの必要アリ．
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
+;; 合字の設定（macOSのみ）
 (mac-auto-operator-composition-mode)
+
+;; Emacs 26.1でのバグ回避．MELPAが正常にうごかないっぽい．
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (eval-when-compile (require 'use-package))
 
@@ -44,61 +70,77 @@ There are two things you can do about this warning:
  '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.15)))))
 
 (use-package ivy
-  :ensure t
+  :straight t
   :config
   (ivy-mode 1)
 )
 
 (use-package counsel
-  :ensure t
+  :straight t
   :config
   (counsel-mode 1)
   (global-set-key "\C-s" 'swiper)
   )
 
 (use-package ivy-rich
-  :ensure t
+  :straight t
   :after (ivy)
   :config
   (ivy-rich-mode 1)
   )
 
-(use-package rust-mode
-  :ensure t)
-
 (use-package lsp-mode
-  :ensure t
+  :straight t
   :diminish lsp-mode
   :hook (rust-mode . lsp)
   :commands lsp
 )
 
+(use-package rust-mode
+  :straight t
+  :after (lsp-mode)
+  :init
+  (setq lsp-rust-server 'rust-analyzer)
+)
+
+;; Xcode標準のSourceKit-LSPを使うので，macOS以外ではコメントアウト
+(use-package lsp-sourcekit
+  :after lsp-mode
+  :straight t
+  :config
+  (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
+
+(use-package swift-mode
+  :straight t
+  :hook (swift-mode . (lambda () (lsp))))
+
 (use-package python-mode
+  :straight t
   :config
   (add-hook 'python-mode-hook #'lsp))
 
 
 (use-package lsp-ui
-  :ensure t
+  :straight t
   :hook (lsp-mode . lsp-ui-mode)
   )
 
 (use-package flycheck
-  :ensure t
+  :straight t
   :hook (after-init-hook . global-flycheck-mode)
   )
 
 (use-package flycheck-rust
   :after (flycheck rust-mode)
-  :ensure t
+  :straight t
   :hook (flycheck-mode . flycheck-rust-setup)
   )
 
 (use-package company
-  :ensure t)
+  :straight t)
 
 (use-package company-lsp
-  :ensure t
+  :straight t
   :after company
   :hook (after-init . global-company-mode)
   :init
@@ -106,7 +148,7 @@ There are two things you can do about this warning:
 )
 
 (use-package undo-tree
-  :ensure t
+  :straight t
   :init
   (global-undo-tree-mode t)
   (global-set-key "\C-z" 'undo)
@@ -114,10 +156,10 @@ There are two things you can do about this warning:
 )
 
 (use-package all-the-icons
-  :ensure t)
+  :straight t)
 
 (use-package neotree
-  :ensure t
+  :straight t
   :after all-the-icons
   :init
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
@@ -125,35 +167,35 @@ There are two things you can do about this warning:
   )
 
 (use-package yasnippet
-  :ensure t
+  :straight t
   :init
   (yas-global-mode 1)
 )
 
 (use-package which-key
-  :ensure t
+  :straight t
   :diminish which-key-mode
   :hook (after-init . which-key-mode)
   )
 
 (use-package company-box
-  :ensure t
+  :straight t
   :hook (company-mode . company-box-mode)
   )
 
 (use-package doom-modeline
-  :ensure t
+  :straight t
   :hook (after-init . doom-modeline-mode)
   )
 
 (use-package company-tabnine
-  :ensure t
+  :straight t
+  :init
+  (add-to-list 'company-backends #'company-tabnine)
   )
 
-(add-to-list 'company-backends #'company-tabnine)
-
 (use-package doom-themes
-  :ensure t
+  :straight t
   :init
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -169,9 +211,11 @@ There are two things you can do about this warning:
   (doom-themes-org-config)
 )
 
+;; バックアップファイル類は無効にする
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+;; フォントとか．
 (set-face-attribute 'default nil
 		    :family "Fira Code"
 		    :height 140)
@@ -181,11 +225,10 @@ There are two things you can do about this warning:
 		  (font-spec :family "Hiragino Sans")
 		  )
 
-
+;; 行数表示を良い感じに．
 (global-linum-mode 1)
 (setq linum-format "%5s ")
 
 (define-key global-map [?¥] [?\\])
 
 (tool-bar-mode -1)
-(setq lsp-rust-server 'rust-analyzer)

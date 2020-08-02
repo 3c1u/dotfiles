@@ -14,4 +14,3 @@ switch (uname)
 	set -x $HOME/.local/share/flutter/bin $HOME/.local/bin $PATH
 end
 
-alias emacs="xemacs"

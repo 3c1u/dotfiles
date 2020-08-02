@@ -232,3 +232,6 @@ There are two things you can do about this warning:
 (define-key global-map [?¥] [?\\])
 
 (tool-bar-mode -1)
+
+;; お察しの通り...
+(setq fancy-splash-image (expand-file-name "~/.config/dotfiles/touka.png"))

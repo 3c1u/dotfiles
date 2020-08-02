@@ -39,7 +39,9 @@ There are two things you can do about this warning:
 (straight-use-package 'use-package)
 
 ;; 合字の設定（macOSのみ）
-(mac-auto-operator-composition-mode)
+(when (memq window-system '(mac))
+  (mac-auto-operator-composition-mode)
+)
 
 ;; Emacs 26.1でのバグ回避．MELPAが正常にうごかないっぽい．
 ;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")

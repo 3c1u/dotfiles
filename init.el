@@ -38,10 +38,6 @@ There are two things you can do about this warning:
 
 (straight-use-package 'use-package)
 
-;; macOSのEmacs以外では動かないので，コメントアウトの必要アリ．
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
-
 ;; 合字の設定（macOSのみ）
 (mac-auto-operator-composition-mode)
 
@@ -73,6 +69,14 @@ There are two things you can do about this warning:
   :straight t
   :config
   (ivy-mode 1)
+)
+
+(use-package exec-path-from-shell
+  :straight t
+  :init
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)
+  )
 )
 
 (use-package counsel
@@ -229,9 +233,27 @@ There are two things you can do about this warning:
 (global-linum-mode 1)
 (setq linum-format "%5s ")
 
+;; ATOK使うのがいけないんだよ...
 (define-key global-map [?¥] [?\\])
 
 (tool-bar-mode -1)
+
+;; ほかのGUIアプリっぽいペースト（yank）の挙動にする
+(delete-selection-mode t)
+
+;; macOSスタイルのキーバインドを指定（Hyperキー）
+(when (memq window-system '(mac ns))
+  (global-set-key [(hyper a)] 'mark-whole-buffer)
+  (global-set-key [(hyper v)] 'yank)
+  (global-set-key [(hyper c)] 'kill-ring-save)
+  (global-set-key [(hyper s)] 'save-buffer)
+  (global-set-key [(hyper l)] 'goto-line)
+  (global-set-key [(hyper w)]
+		  (lambda () (interactive) (delete-window)))
+  (global-set-key [(hyper z)] 'undo)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'hyper)
+)
 
 ;; お察しの通り...
 (setq fancy-splash-image (expand-file-name "~/.config/dotfiles/touka.png"))

@@ -1,7 +1,12 @@
-set macligatures
-set guifont=Fira\ Code:h14
+if has("gui_running")
+   set macligatures
+   set guifont=Fira\ Code:h14
 
-let macvim_skip_colorscheme=1
+   let macvim_skip_colorscheme=1
+   
+   set lines=50
+   set cmdheight=2
+endif
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -35,7 +40,6 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 "
 
-
 colorscheme onedark
 
 let g:airline_theme='onedark'
@@ -54,9 +58,6 @@ set tabstop=4
 set shiftwidth=4
 
 set autoindent
-
-set lines=50
-set cmdheight=2
 
 set updatetime=300
 set shortmess+=c
@@ -207,6 +208,7 @@ inoremap <silent> <C-p> <Up>
 inoremap <silent> <C-n> <Down>
 
 inoremap <silent> <C-d> <Delete>
+inoremap <silent> <C-h> <Backspace>
 
 inoremap <silent> <C-a> <Home>
 inoremap <silent> <C-e> <End>
@@ -215,6 +217,7 @@ inoremap <silent> <C-t> <ESC>xpi
 inoremap <silent> <C-z> <ESC>ua
 
 inoremap <silent> <C-x><C-s> <ESC>:w<CR>a
-inoremap <silent> <C-x><C-c> <ESC>:q
+inoremap <silent> <C-x><C-c> <ESC>:qa<CR>
 
 inoremap <silent> <C-k> <ESC>dda
+

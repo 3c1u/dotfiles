@@ -245,6 +245,7 @@ There are two things you can do about this warning:
 
 ;; macOSスタイルのキーバインドを指定（Hyperキー）
 (when (memq window-system '(mac ns))
+  (global-set-key [(hyper q)] 'save-buffers-kill-terminal)
   (global-set-key [(hyper n)] 'make-frame-command)
   (global-set-key [(hyper a)] 'mark-whole-buffer)
   (global-set-key [(hyper v)] 'yank)

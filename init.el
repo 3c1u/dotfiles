@@ -109,7 +109,7 @@ There are two things you can do about this warning:
   (setq lsp-rust-server 'rust-analyzer)
 )
 
-;; Xcode標準のSourceKit-LSPを使うので，macOS以外ではコメントアウト
+;; Xcode標準のSourceKit-LSPを使うので，Linuxだとパスが違う？
 (use-package lsp-sourcekit
   :after lsp-mode
   :straight t
@@ -194,11 +194,12 @@ There are two things you can do about this warning:
   :hook (after-init . doom-modeline-mode)
   )
 
-(use-package company-tabnine
-  :straight t
-  :init
-  (add-to-list 'company-backends #'company-tabnine)
-  )
+;; 便利だけどやっぱ重い．焼ける．
+;; (use-package company-tabnine
+;;  :straight t
+;;  :init
+;;  (add-to-list 'company-backends #'company-tabnine)
+;;  )
 
 (use-package doom-themes
   :straight t
@@ -261,3 +262,9 @@ There are two things you can do about this warning:
 
 ;; お察しの通り...
 (setq fancy-splash-image (expand-file-name "~/.config/dotfiles/touka.png"))
+
+(defun fish (buffer-name)
+  "Start a terminal and rename buffer."
+  (interactive "sbuffer name: ")
+  (term "/usr/local/bin/fish")
+  (rename-buffer buffer-name t))

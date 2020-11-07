@@ -102,14 +102,18 @@ There are two things you can do about this warning:
 
 (use-package rust-mode
   :straight t
-  :after (lsp-mode):init
+  :after (lsp-mode)
+  :init
   (setq lsp-rust-server 'rust-analyzer))
 
 ;; Xcode標準のSourceKit-LSPを使うので，Linuxだとパスが違う？
 (use-package lsp-sourcekit
   :after lsp-mode
   :straight t
-  :config (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
+  :config
+  (setq lsp-sourcekit-executable
+	"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")
+  )
 
 (use-package swift-mode
   :straight t
@@ -196,12 +200,20 @@ There are two things you can do about this warning:
 
 (use-package doom-themes :straight t
   :init
-  ;; Global settings (defaults) (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled doom-themes-enable-italic
-  t)(load-theme 'doom-one t)(doom-themes-visual-bell-config)(doom-themes-neotree-config)(doom-themes-org-config))
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t)
+  (load-theme 'doom-one t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-neotree-config)
+  (doom-themes-org-config)
+  )
 
 (use-package ligature :load-path "~/.config/dotfiles/ligature.el"
   :config
-  ;; Enable the www ligature in every possible major mode (ligature-set-ligatures 't '("www"))(ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::" ":::"
+  ;; Enable the www ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+  (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::" ":::"
   ":=" "!!" "!=" "!==" "-}" "----" "-->" "->"
   "->>" "-<" "-<<" "-~" "#{" "#[" "##" "###"
   "####" "#(" "#?" "#_" "#_(" ".-" ".=" ".."
@@ -213,11 +225,19 @@ There are two things you can do about this warning:
   "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->"
   "<+" "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<"
   "<<-" "<<=" "<<<" "<~" "<~~" "</" "</>" "~@"
-  "~-" "~>" "~~" "~~>" "%%"))(global-ligature-mode 't))
+  "~-" "~>" "~~" "~~>" "%%"))
+  (global-ligature-mode 't))
 
 (use-package srefactor
   :straight t
   :init (require 'srefactor-lisp))
+
+(use-package typescript-mode
+  :straight t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+  :hook (typescript-mode . lsp)
+  )
 
 ;; バックアップファイル類は無効にする
 (setq make-backup-files nil)

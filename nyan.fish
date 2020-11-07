@@ -4,7 +4,7 @@ alias cls="clear"
 alias vi="emacs -nw"
 alias vim="emacs -nw"
 
-alias conda="/usr/local/anaconda3/bin/conda"
+# alias conda="/usr/local/anaconda3/bin/conda"
 
 switch (uname)
    case Darwin

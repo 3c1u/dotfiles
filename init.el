@@ -109,22 +109,10 @@ There are two things you can do about this warning:
   (setq lsp-rust-server 'rust-analyzer)
 )
 
-;; Xcode標準のSourceKit-LSPを使うので，Linuxだとパスが違う？
-(use-package lsp-sourcekit
-  :after lsp-mode
-  :straight t
-  :config
-  (setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"))
-
-(use-package swift-mode
-  :straight t
-  :hook (swift-mode . (lambda () (lsp))))
-
 (use-package python-mode
   :straight t
   :config
   (add-hook 'python-mode-hook #'lsp))
-
 
 (use-package lsp-ui
   :straight t
@@ -143,14 +131,12 @@ There are two things you can do about this warning:
   )
 
 (use-package company
-  :straight t)
-
-(use-package company-lsp
   :straight t
-  :after company
-  :hook (after-init . global-company-mode)
   :init
-  (push 'company-lsp company-backends)
+  (with-eval-after-load "company"
+    (define-key company-active-map (kbd "C-n") #'company-select-next)
+    (define-key company-active-map (kbd "C-p") #'company-select-previous)
+    )
 )
 
 (use-package undo-tree
@@ -194,13 +180,6 @@ There are two things you can do about this warning:
   :hook (after-init . doom-modeline-mode)
   )
 
-;; 便利だけどやっぱ重い．焼ける．
-;; (use-package company-tabnine
-;;  :straight t
-;;  :init
-;;  (add-to-list 'company-backends #'company-tabnine)
-;;  )
-
 (use-package doom-themes
   :straight t
   :init
@@ -218,6 +197,11 @@ There are two things you can do about this warning:
   (doom-themes-org-config)
 )
 
+(use-package dashboard
+  :straight t
+  :config
+  (dashboard-setup-startup-hook))
+
 ;; バックアップファイル類は無効にする
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -225,7 +209,7 @@ There are two things you can do about this warning:
 ;; フォントとか．
 (set-face-attribute 'default nil
 		    :family "Fira Code"
-		    :height 140)
+		    :height 120)
 
 (set-fontset-font t
 		  'japanese-jisx0208
@@ -257,6 +241,7 @@ There are two things you can do about this warning:
   (global-set-key [(hyper w)]
 		  (lambda () (interactive) (delete-window)))
   (global-set-key [(hyper z)] 'undo)
+  (global-set-key [(hyper f)] 'swiper)
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'hyper)
 )
@@ -264,8 +249,10 @@ There are two things you can do about this warning:
 ;; お察しの通り...
 (setq fancy-splash-image (expand-file-name "~/.config/dotfiles/touka.png"))
 
+(setq dashboard-startup-banner (expand-file-name "~/.config/dotfiles/touka.png"))
+
 (defun fish (buffer-name)
   "Start a terminal and rename buffer."
   (interactive "sbuffer name: ")
-  (term "/usr/local/bin/fish")
+  (ansi-term "/usr/local/bin/fish")
   (rename-buffer buffer-name t))

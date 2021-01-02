@@ -98,8 +98,10 @@ There are two things you can do about this warning:
 (use-package lsp-mode
   :straight t
   :diminish lsp-mode
-  :hook (rust-mode . lsp)
+  :hook ((rust-mode . lsp) (c++-mode . lsp))
   :commands lsp
+  :config
+  (setq lsp-semantic-tokens-enable t)
 )
 
 (use-package rust-mode
@@ -107,6 +109,8 @@ There are two things you can do about this warning:
   :after (lsp-mode)
   :init
   (setq lsp-rust-server 'rust-analyzer)
+  :bind
+  ("H-i" . lsp-format-buffer)
 )
 
 (use-package python-mode
@@ -152,11 +156,12 @@ There are two things you can do about this warning:
 
 (use-package neotree
   :straight t
-  :after all-the-icons
+ :after all-the-icons
   :init
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (global-set-key [f8] 'neotree-toggle)
-  )
+  (setq neo-window-fixed-size nil)
+)
 
 (use-package yasnippet
   :straight t
@@ -202,6 +207,65 @@ There are two things you can do about this warning:
   :config
   (dashboard-setup-startup-hook))
 
+(use-package cmake-mode
+  :straight t
+  :config
+  (setq auto-mode-alist
+	  (append
+	   '(("CMakeLists\\.txt\\'" . cmake-mode))
+	   '(("\\.cmake\\'" . cmake-mode))
+	   auto-mode-alist)))
+
+(use-package centaur-tabs
+  :straight t
+  :init
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-height 32)
+  (setq centaur-tabs-set-icons t)
+  (setq centaur-tabs-set-bar 'under)
+  (setq x-underline-at-descent-line t)
+  (centaur-tabs-change-fonts "Helvetica" 120)
+  :bind
+  ("M-<left>"  . centaur-tabs-backward)
+  ("M-<right>" . centaur-tabs-forward)
+  ("H-t"       . centaur-tabs-mode)
+  ("H-w"       . kill-this-buffer)
+  )
+
+(use-package git-gutter-fringe
+  :straight t
+  :init
+  (global-git-gutter-mode t)
+  :config
+  (fringe-helper-define 'git-gutter-fr:added nil
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X.......")
+  (fringe-helper-define 'git-gutter-fr:deleted nil
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X.......")
+  (fringe-helper-define 'git-gutter-fr:modified nil
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X......."
+  "X.......")
+)
+
 ;; バックアップファイル類は無効にする
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -211,11 +275,15 @@ There are two things you can do about this warning:
 		    :family "Fira Code"
 		    :height 120)
 
+(set-face-attribute 'neo-file-link-face   nil :family "Helvetica")
+(set-face-attribute 'neo-dir-link-face    nil :family "Helvetica")
+(set-face-attribute 'neo-header-face      nil :family "Helvetica")
+(set-face-attribute 'neo-expand-btn-face  nil :family "Helvetica")
+
 (set-fontset-font t
 		  'japanese-jisx0208
 		  (font-spec :family "Hiragino Sans")
 		  )
-
 
 ;; 行数表示を良い感じに．
 (global-linum-mode 1)
@@ -225,6 +293,9 @@ There are two things you can do about this warning:
 (define-key global-map [?¥] [?\\])
 
 (tool-bar-mode -1)
+(when (eq window-system 'ns)
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
 ;; ほかのGUIアプリっぽいペースト（yank）の挙動にする
 (delete-selection-mode t)
@@ -236,14 +307,20 @@ There are two things you can do about this warning:
   (global-set-key [(hyper a)] 'mark-whole-buffer)
   (global-set-key [(hyper v)] 'yank)
   (global-set-key [(hyper c)] 'kill-ring-save)
+  (global-set-key [(hyper x)] 'kill-region)
   (global-set-key [(hyper s)] 'save-buffer)
   (global-set-key [(hyper l)] 'goto-line)
-  (global-set-key [(hyper w)]
-		  (lambda () (interactive) (delete-window)))
   (global-set-key [(hyper z)] 'undo)
   (global-set-key [(hyper f)] 'swiper)
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'hyper)
+  )
+
+(when (window-system)
+  (setq frame-title-format
+      (if (buffer-file-name)
+          (format "%%f - Emacs")
+        (format "%%b - Emacs")))
 )
 
 ;; お察しの通り...

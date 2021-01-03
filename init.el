@@ -207,21 +207,35 @@ There are two things you can do about this warning:
 
 (use-package vue-mode
   :straight t
-  :after (lsp-mode)
+  :after (lsp-mode flycheck)
   :config
   (setq mmm-submode-decoration-level 0)
+  (flycheck-add-mode 'javascript-eslint 'vue-mode)
+  (flycheck-add-mode 'javascript-eslint 'css-mode)
   :hook (
   (vue-mode . lsp)
-  (vue-mode . (lambda () (setq tab-width 2)))
   )
 )
 
 (use-package typescript-mode
   :straight t
-  :after (lsp-mode)
+  :after (lsp-mode flycheck)
+  :config
+  (flycheck-add-mode 'javascript-eslint 'typescript-mode)
+  (flycheck-add-mode 'javascript-eslint 'js-mode)
   :hook (
   (typescript-mode . lsp)
-  (typescript-mode . (lambda () (setq tab-width 2)))
+  )
+)
+
+(use-package add-node-modules-path
+  :straight t
+  :after (typescript-mode vue-mode)
+  :hook
+  (
+   (js-mode . add-node-modules-path)
+   (typescript-mode . add-node-modules-path)
+   (vue-mode . add-node-modules-path)
   )
 )
 

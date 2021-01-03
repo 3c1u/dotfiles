@@ -1,4 +1,4 @@
-;; Emacs設定ファイル
+; Emacs設定ファイル
 ;; ---
 ;; Copyright (c) 2020 Hikaru Terazono. All rights reserved.
 
@@ -53,11 +53,13 @@ There are two things you can do about this warning:
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-box-icons-alist (quote company-box-icons-all-the-icons))
+ '(company-box-icons-alist 'company-box-icons-all-the-icons)
  '(global-auto-revert-mode t)
+ '(indent-tabs-mode nil)
+ '(js-indent-level 2)
  '(package-selected-packages
-   (quote
-    (evil python-mode lsp-go go-mode exec-path-from-shell better-shell flycheck-rust ivy-rich counsel ivy rust-mode lsp-mode use-package))))
+   '(evil python-mode lsp-go go-mode exec-path-from-shell better-shell flycheck-rust ivy-rich counsel ivy rust-mode lsp-mode use-package))
+ '(typescript-indent-level 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -101,7 +103,8 @@ There are two things you can do about this warning:
   :hook ((rust-mode . lsp) (c++-mode . lsp))
   :commands lsp
   :config
-  (setq lsp-semantic-tokens-enable t)
+  (setq lsp-enable-semantic-highlighting t)
+  (setq lsp-enable-indentation t)
 )
 
 (use-package rust-mode
@@ -200,7 +203,34 @@ There are two things you can do about this warning:
   (doom-themes-neotree-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
+  )
+
+(use-package vue-mode
+  :straight t
+  :after (lsp-mode)
+  :config
+  (setq mmm-submode-decoration-level 0)
+  :hook (
+  (vue-mode . lsp)
+  (vue-mode . (lambda () (setq tab-width 2)))
+  )
 )
+
+(use-package typescript-mode
+  :straight t
+  :after (lsp-mode)
+  :hook (
+  (typescript-mode . lsp)
+  (typescript-mode . (lambda () (setq tab-width 2)))
+  )
+)
+
+;;(use-package tree-sitter
+;;  :straight t
+;;  :config
+;;  (global-tree-sitter-mode)
+;;  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;  )
 
 (use-package dashboard
   :straight t
@@ -266,6 +296,9 @@ There are two things you can do about this warning:
   "X.......")
 )
 
+(setq-default indent-tabs-mode nil)
+(setq-default electric-indent-inhibit t)
+
 ;; バックアップファイル類は無効にする
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -325,11 +358,10 @@ There are two things you can do about this warning:
 
 ;; お察しの通り...
 (setq fancy-splash-image (expand-file-name "~/.config/dotfiles/touka.png"))
-
 (setq dashboard-startup-banner (expand-file-name "~/.config/dotfiles/touka.png"))
 
 (defun fish (buffer-name)
   "Start a terminal and rename buffer."
   (interactive "sbuffer name: ")
-  (ansi-term "/usr/local/bin/fish")
+  (ansi-term "/opt/homebrew/bin/fish")
   (rename-buffer buffer-name t))

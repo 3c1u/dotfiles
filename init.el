@@ -107,6 +107,13 @@ There are two things you can do about this warning:
   (setq lsp-enable-indentation t)
 )
 
+(use-package projectile
+  :straight t
+  :custom
+  (projectile-indexing-method 'alien)
+  (projectile-use-git-grep 1)
+  )
+
 (use-package rust-mode
   :straight t
   :after (lsp-mode)
@@ -159,7 +166,9 @@ There are two things you can do about this warning:
 
 (use-package neotree
   :straight t
- :after all-the-icons
+  :after (all-the-icons projectile)
+  :custom
+  (neo-theme 'nerd2)
   :init
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (global-set-key [f8] 'neotree-toggle)
@@ -276,29 +285,14 @@ There are two things you can do about this warning:
   ("H-w"       . kill-this-buffer)
   )
 
+(use-package magit
+  :straight t)
+
 (use-package git-gutter-fringe
   :straight t
   :init
   (global-git-gutter-mode t)
   :config
-  (fringe-helper-define 'git-gutter-fr:added nil
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X.......")
-  (fringe-helper-define 'git-gutter-fr:deleted nil
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X......."
-  "X.......")
   (fringe-helper-define 'git-gutter-fr:modified nil
   "X......."
   "X......."
@@ -308,6 +302,24 @@ There are two things you can do about this warning:
   "X......."
   "X......."
   "X.......")
+  (fringe-helper-define 'git-gutter-fr:deleted nil
+  "XXXXXXXX"
+  "XXXXXXXX"
+  "........"
+  "........"
+  "........"
+  "........"
+  "........"
+  "........")
+  (fringe-helper-define 'git-gutter-fr:added nil
+  "XX......"
+  "XX......"
+  "XX......"
+  "XX......"
+  "XX......"
+  "XX......"
+  "XX......"
+  "XX......")
 )
 
 (setq-default indent-tabs-mode nil)
@@ -316,11 +328,12 @@ There are two things you can do about this warning:
 ;; バックアップファイル類は無効にする
 (setq make-backup-files nil)
 (setq auto-save-default nil)
+(setq create-lockfiles nil)
 
 ;; フォントとか．
 (set-face-attribute 'default nil
 		    :family "Fira Code"
-		    :height 120)
+		    :height 130)
 
 (set-face-attribute 'neo-file-link-face   nil :family "Helvetica")
 (set-face-attribute 'neo-dir-link-face    nil :family "Helvetica")
